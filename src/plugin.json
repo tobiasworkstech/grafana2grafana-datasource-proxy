@@ -1,0 +1,40 @@
+{
+  "$schema": "https://raw.githubusercontent.com/grafana/grafana/main/docs/sources/developers/plugins/plugin.schema.json",
+  "type": "datasource",
+  "name": "Grafana2Grafana Proxy",
+  "id": "tobiasworkstech-grafana2grafanaproxy-datasource",
+  "backend": true,
+  "executable": "gpx_grafana2grafanaproxy_datasource",
+  "metrics": true,
+  "logs": true,
+  "alerting": true,
+  "info": {
+    "description": "Query a Prometheus, VictoriaMetrics or VictoriaLogs datasource that is configured on another Grafana instance",
+    "author": {
+      "name": "Tobiasworkstech",
+      "url": "https://github.com/tobiasworkstech"
+    },
+    "keywords": ["grafana", "proxy", "federation", "prometheus", "victoriametrics", "victorialogs", "remote"],
+    "logos": {
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
+    },
+    "links": [
+      {
+        "name": "GitHub",
+        "url": "https://github.com/tobiasworkstech/grafana2grafana-datasource-proxy"
+      }
+    ],
+    "screenshots": [
+      { "name": "Configuration: remote Grafana, credentials and destination datasource", "path": "img/config-editor.png" },
+      { "name": "Querying a remote Prometheus datasource", "path": "img/query-prometheus.png" },
+      { "name": "Querying a remote VictoriaLogs datasource", "path": "img/query-victorialogs.png" }
+    ],
+    "version": "%VERSION%",
+    "updated": "%TODAY%"
+  },
+  "dependencies": {
+    "grafanaDependency": ">=11.0.0",
+    "plugins": []
+  }
+}

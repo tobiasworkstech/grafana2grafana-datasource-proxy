@@ -1,0 +1,59 @@
+# Dev / e2e stack:
+#   grafana-x (:3000)  - has this plugin; its datasources point at grafana-y
+#   grafana-y (:3001)  - owns Prometheus, VictoriaMetrics and VictoriaLogs datasources
+name: g2g-proxy-dev
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    command: ['--config.file=/etc/prometheus/prometheus.yml']
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:latest
+    command: ['-selfScrapeInterval=5s', '-retentionPeriod=1d']
+    ports:
+      - '8428:8428'
+
+  victorialogs:
+    image: victoriametrics/victoria-logs:latest
+    ports:
+      - '9428:9428'
+
+  # Writes a few log lines into VictoriaLogs every 5s.
+  log-generator:
+    image: curlimages/curl:latest
+    entrypoint: ['/bin/sh', '-c']
+    command:
+      - |
+        while true; do
+          for lvl in info info warn error; do
+            printf '{"_msg":"request handled","level":"%s","app":"demo","_time":"%s"}\n' "$$lvl" "$$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          done | curl -s -X POST -H 'Content-Type: application/stream+json' --data-binary @- 'http://victorialogs:9428/insert/jsonline?_stream_fields=app' >/dev/null
+          sleep 5
+        done
+    depends_on: [victorialogs]
+
+  grafana-y:
+    image: grafana/grafana:latest
+    ports:
+      - '3001:3000'
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_PLUGINS_PREINSTALL_SYNC: victoriametrics-metrics-datasource,victoriametrics-logs-datasource
+    volumes:
+      - ./grafana-y/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on: [prometheus, victoriametrics, victorialogs]
+
+  grafana-x:
+    image: grafana/grafana:latest
+    ports:
+      - '3000:3000'
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: tobiasworkstech-grafana2grafanaproxy-datasource
+      GF_LOG_FILTERS: plugin.tobiasworkstech-grafana2grafanaproxy-datasource:debug
+    volumes:
+      - ../dist:/var/lib/grafana/plugins/tobiasworkstech-grafana2grafanaproxy-datasource:ro
+      - ./grafana-x/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on: [grafana-y]

@@ -1,0 +1,36 @@
+apiVersion: 1
+datasources:
+  - name: Prometheus @ grafana-y
+    uid: g2g-prom
+    type: tobiasworkstech-grafana2grafanaproxy-datasource
+    isDefault: true
+    jsonData:
+      grafanaUrl: http://grafana-y:3000
+      authType: basic
+      basicAuthUsername: admin
+      targetType: prometheus
+      targetDatasourceName: Prometheus
+    secureJsonData:
+      basicAuthPassword: admin
+  - name: VictoriaMetrics @ grafana-y
+    uid: g2g-vm
+    type: tobiasworkstech-grafana2grafanaproxy-datasource
+    jsonData:
+      grafanaUrl: http://grafana-y:3000
+      authType: basic
+      basicAuthUsername: admin
+      targetType: victoriametrics
+      targetDatasourceName: VictoriaMetrics
+    secureJsonData:
+      basicAuthPassword: admin
+  - name: VictoriaLogs @ grafana-y
+    uid: g2g-vl
+    type: tobiasworkstech-grafana2grafanaproxy-datasource
+    jsonData:
+      grafanaUrl: http://grafana-y:3000
+      authType: basic
+      basicAuthUsername: admin
+      targetType: victorialogs
+      targetDatasourceName: VictoriaLogs
+    secureJsonData:
+      basicAuthPassword: admin
