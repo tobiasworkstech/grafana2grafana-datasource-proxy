@@ -1,6 +1,6 @@
 {
   "name": "tobiasworkstech-grafana2grafanaproxy-datasource",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Query Prometheus, VictoriaMetrics and VictoriaLogs datasources that live on another (remote) Grafana instance",
   "scripts": {
     "build": "webpack -c ./.config/webpack/webpack.config.ts --env production",
