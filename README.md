@@ -100,6 +100,10 @@ GOOS=linux GOARCH=arm64 go build -o dist/gpx_grafana2grafanaproxy_datasource_lin
 npm run server
 ```
 
+### Validating the proxy against direct queries
+
+`npm run bench` runs a k6 load test (`scripts/k6/proxy-vs-direct.js`, needs [k6](https://grafana.com/docs/k6/latest/set-up/install-k6/)) against the dev stack. Every iteration sends the same query to Grafana Y's own datasource and through the proxy on Grafana X, checks that both return identical data, and records the latency the proxy adds. Thresholds fail the run on any mismatch or error. Point it at other instances with `DIRECT_URL`, `PROXY_URL`, `GRAFANA_USER`, `GRAFANA_PASSWORD` and `MAX_VUS`.
+
 ## License
 
 Apache-2.0

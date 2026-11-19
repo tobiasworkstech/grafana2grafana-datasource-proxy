@@ -11,6 +11,7 @@
     "lint": "eslint --cache .",
     "lint:fix": "npm run lint -- --fix && prettier --write --list-different .",
     "server": "docker compose -f docker/docker-compose.yml up -d",
+    "bench": "k6 run scripts/k6/proxy-vs-direct.js",
     "sign": "npx --yes @grafana/sign-plugin@latest"
   },
   "author": "Tobiasworkstech",
